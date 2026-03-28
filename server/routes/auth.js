@@ -12,7 +12,12 @@ const User = require('../models/User');
 //     credential: admin.credential.cert(serviceAccount)
 //   });
 if (!admin.apps.length) {
-  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  let serviceAccount;
+  if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  } else {
+    serviceAccount = require(path.join(__dirname, '../serviceAccount.json'));
+  }
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
   });

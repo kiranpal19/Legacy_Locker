@@ -1,7 +1,8 @@
 const path = require('path');
 const express = require('express');
 const router = express.Router();
-const verifyToken = require('../middleware/verifyToken');
+const verifyToken = require('../middleware/VerifyToken');
+
 const Nominee = require('../models/Nominee');
 
 // POST /api/nominees — add a new nominee

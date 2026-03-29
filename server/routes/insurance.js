@@ -1,9 +1,9 @@
 const path = require('path');
 const express = require('express');
 const router = express.Router();
-const verifyToken = require('../middleware/verifyToken');
+const verifyToken = require('../middleware/VerifyToken');
 const User = require('../models/User');
-const { deliverAllOnDeath } = require('../utils/delivery');
+const { deliverAllOnDeath } = require('../utils/Delivery');
 
 
 

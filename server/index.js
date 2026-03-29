@@ -25,6 +25,8 @@
 //   })
 //   .catch(err => console.error('DB connection failed:', err));/
 
+const path = require('path');
+
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
@@ -53,10 +55,15 @@ app.use(express.json());
 
 app.get('/', (req, res) => res.json({ status: 'Legacy Locker API running' }));
 
-app.use('/api/auth',      require('./routes/auth'));
-app.use('/api/memories',  require('./routes/memories'));
-app.use('/api/nominees',  require('./routes/nominees'));
-app.use('/api/insurance', require('./routes/insurance'));
+// app.use('/api/auth',      require('./routes/auth'));
+// app.use('/api/memories',  require('./routes/memories'));
+// app.use('/api/nominees',  require('./routes/nominees'));
+// app.use('/api/insurance', require('./routes/insurance'));
+
+app.use('/api/auth',      require(path.join(__dirname, './routes/auth')));
+app.use('/api/memories',  require(path.join(__dirname, './routes/memories')));
+app.use('/api/nominees',  require(path.join(__dirname, './routes/nominees')));
+app.use('/api/insurance', require(path.join(__dirname, './routes/insurance')));
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)

@@ -1,8 +1,11 @@
+const path = require('path');
 const express = require('express');
 const router = express.Router();
 const admin = require('firebase-admin');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+// const User = require('../models/User');
+
+const User = require(path.join(__dirname, '../models/User'));
 
 // Initialize Firebase Admin (only once)
 // if (!admin.apps.length) {

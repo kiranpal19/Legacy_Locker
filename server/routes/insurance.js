@@ -1,8 +1,15 @@
+const path = require('path');
 const express = require('express');
 const router = express.Router();
 const verifyToken = require('../middleware/verifyToken');
-const User = require('../models/User');
-const { deliverAllOnDeath } = require('../utils/delivery');
+// const User = require('../models/User');
+// const { deliverAllOnDeath } = require('../utils/delivery');
+
+const User = require(path.join(__dirname, '../models/User'));
+const { deliverAllOnDeath } = require(path.join(__dirname, '../utils/delivery'));
+
+
+
 
 // POST /api/insurance/webhook
 // Called by insurance company when claim is settled

@@ -1,7 +1,10 @@
+const path = require('path');
 const express = require('express');
 const router = express.Router();
 const verifyToken = require('../middleware/verifyToken');
-const Nominee = require('../models/Nominee');
+// const Nominee = require('../models/Nominee');
+
+const Nominee = require(path.join(__dirname, '../models/Nominee'));
 
 // POST /api/nominees — add a new nominee
 router.post('/', verifyToken, async (req, res) => {

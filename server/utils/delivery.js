@@ -1,11 +1,10 @@
 const path = require('path');
 const nodemailer = require('nodemailer');
-// const Memory = require('../models/Memory');
-// const Nominee = require('../models/Nominee');
+const Memory = require('../models/Memory');
+const Nominee = require('../models/Nominee');
 
 
-const Memory = require(path.join(__dirname, '../models/Memory'));
-const Nominee = require(path.join(__dirname, '../models/Nominee'));
+
 
 // Email transporter
 const transporter = nodemailer.createTransport({

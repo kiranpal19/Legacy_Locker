@@ -4,9 +4,8 @@ const router = express.Router();
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const verifyToken = require('../middleware/verifyToken');
-// const Memory = require('../models/Memory');
+const Memory = require('../models/Memory');
 
-const Memory = require(path.join(__dirname, '../models/Memory'));
 
 // Configure Cloudinary
 cloudinary.config({

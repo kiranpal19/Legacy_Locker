@@ -46,10 +46,10 @@ app.use(express.json());
 
 app.get('/', (req, res) => res.json({ status: 'Legacy Locker API running' }));
 
-app.use('/api/auth',      require(path.join(__dirname, 'routes/auth')));
-app.use('/api/memories',  require(path.join(__dirname, 'routes/memories')));
-app.use('/api/nominees',  require(path.join(__dirname, 'routes/nominees')));
-app.use('/api/insurance', require(path.join(__dirname, 'routes/insurance')));
+app.use('/api/auth',      require('./routes/auth'));
+app.use('/api/memories',  require('./routes/memories'));
+app.use('/api/nominees',  require('./routes/nominees'));
+app.use('/api/insurance', require('./routes/insurance'));
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected'))

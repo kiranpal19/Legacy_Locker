@@ -28,16 +28,6 @@ const User = require('../models/User');
 //     credential: admin.credential.cert(serviceAccount)
 //   });
 // }
-
-
-
-
-
-
-
-
-
-
 const fs = require("fs");
 // const path = require("path");
 
@@ -49,10 +39,6 @@ if (!admin.apps.length) {
     credential: admin.credential.cert(serviceAccount)
   });
 }
-
-
-
-
 
 // POST /api/auth/verify
 // Frontend sends Firebase idToken, we return our own JWT

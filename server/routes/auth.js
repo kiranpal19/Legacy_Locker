@@ -5,41 +5,8 @@ const admin = require('firebase-admin');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-
-
-// Initialize Firebase Admin (only once)
-// if (!admin.apps.length) {
-// const path = require('path');
-// const serviceAccount = require(path.join(__dirname, '../serviceAccount.json'));
-//   admin.initializeApp({
-//     credential: admin.credential.cert(serviceAccount)
-//   });
-
-
-// if (!admin.apps.length) {
-//   let serviceAccount;
-//   if (process.env.FIREBASE_SERVICE_ACCOUNT) {
-//     serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-//   } else {
-//     serviceAccount = require(path.join(__dirname, '../serviceAccount.json'));
-  
-//   }
-//   admin.initializeApp({
-//     credential: admin.credential.cert(serviceAccount)
-//   });
-// }
-
-
-
-
-
-
-
-
-
-
 const fs = require("fs");
-// const path = require("path");
+
 
 if (!admin.apps.length) {
   const serviceAccountPath = path.resolve(process.cwd(), process.env.FIREBASE_SERVICE_ACCOUNT);
@@ -49,11 +16,6 @@ if (!admin.apps.length) {
     credential: admin.credential.cert(serviceAccount)
   });
 }
-
-
-
-
-
 // POST /api/auth/verify
 // Frontend sends Firebase idToken, we return our own JWT
 router.post('/verify', async (req, res) => {

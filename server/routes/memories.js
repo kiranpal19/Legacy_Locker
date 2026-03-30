@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
-const verifyToken = require('../middleware/VerifyToken');
+const verifyToken = require('../middleware/Verifytoken');
 const Memory = require('../models/Memory');
 
 

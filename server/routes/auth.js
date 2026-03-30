@@ -54,12 +54,6 @@ if (!admin.apps.length) {
 
 
 
-
-
-
-
-
-
 // POST /api/auth/verify
 // Frontend sends Firebase idToken, we return our own JWT
 router.post('/verify', async (req, res) => {
@@ -96,7 +90,7 @@ router.post('/verify', async (req, res) => {
 });
 
 // POST /api/auth/me — get current user from JWT
-router.get('/me', require('../middleware/verifytoken'), async (req, res) => {
+router.get('/me', require('../middleware/Verifytoken'), async (req, res) => {
   try {
     const user = await User.findById(req.user.userId);
     res.json(user);

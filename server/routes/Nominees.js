@@ -1,8 +1,7 @@
 const path = require('path');
 const express = require('express');
 const router = express.Router();
-const verifyToken = require('../middleware/Verifyt
-  oken');
+const verifyToken = require('../middleware/Verifytoken');
 
 const Nominee = require('../models/Nominee');
 

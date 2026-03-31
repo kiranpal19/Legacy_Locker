@@ -37,10 +37,13 @@ const app = express();
 app.use(cors({
   origin: [
     'http://localhost:5173',
+    'https://legacy-locker-qnmk-qqm9nx0vj-kiranpal19s-projects.vercel.app',
+    'https://legacy-locker-qnmk.vercel.app',
     /\.vercel\.app$/
   ],
   credentials: true
 }));
+
 
 app.use(express.json());
 

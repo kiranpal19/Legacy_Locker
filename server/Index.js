@@ -34,16 +34,38 @@ const cors = require('cors');
 
 const app = express();
 
+// app.use(cors({
+//   origin: [
+//     'http://localhost:5173',
+//     'https://legacy-locker-qnmk-qqm9nx0vj-kiranpal19s-projects.vercel.app',
+//     'https://legacy-locker-qnmk.vercel.app'
+//   ],
+//   credentials: true
+// }));
+
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://legacy-locker-qnmk.vercel.app'
+];
+
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'https://legacy-locker-qnmk-qqm9nx0vj-kiranpal19s-projects.vercel.app',
-    'https://legacy-locker-qnmk.vercel.app',
-    /\.vercel\.app$/
-  ],
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    if (
+      allowedOrigins.includes(origin) ||
+      /vercel\.app$/.test(origin)
+    ) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`Not allowed by CORS: ${origin}`));
+  },
   credentials: true
 }));
 
+
+app.options(/.*/, cors());
 
 app.use(express.json());
 

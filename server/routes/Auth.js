@@ -76,29 +76,29 @@ router.get('/me', require('../middleware/Verifytoken'), async (req, res) => {
 
 // DEV ONLY — get a token without Firebase
 // Remove this before going live
-router.post('/dev-login', async (req, res) => {
-  try {
-    const { phone } = req.body;
+// router.post('/dev-login', async (req, res) => {
+//   try {
+//     const { phone } = req.body;
 
-    let user = await User.findOne({ phone });
-    if (!user) {
-      user = await User.create({
-        phone,
-        name: 'Test User',
-        email: req.body.email || 'test@gmail.com',
-      });
-    }
+//     let user = await User.findOne({ phone });
+//     if (!user) {
+//       user = await User.create({
+//         phone,
+//         name: 'Test User',
+//         email: req.body.email || 'test@gmail.com',
+//       });
+//     }
 
-    const token = jwt.sign(
-      { userId: user._id, phone: user.phone },
-      process.env.JWT_SECRET,
-      { expiresIn: '30d' }
-    );
+//     const token = jwt.sign(
+//       { userId: user._id, phone: user.phone },
+//       process.env.JWT_SECRET,
+//       { expiresIn: '30d' }
+//     );
 
-    res.json({ token, user });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+//     res.json({ token, user });
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// });
 
 module.exports = router;

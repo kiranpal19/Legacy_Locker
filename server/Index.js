@@ -1,29 +1,7 @@
-// const dotenv = require('dotenv');
-// dotenv.config();
-
-// const express = require('express');
-// const mongoose = require('mongoose');
-// const cors = require('cors');
-
-// const app = express();
-// app.use(cors());
-// app.use(express.json());
-
-// app.get('/', (req, res) => res.json({ status: 'Legacy Locker API running' }));
-
-// app.use('/api/auth',      require('./routes/Auth'));
-// app.use('/api/memories',  require('./routes/Memories'));
-// app.use('/api/nominees',  require('./routes/Nominees'));
-// app.use('/api/insurance', require('./routes/Insurance'));
-
-// mongoose.connect(process.env.MONGO_URI)
-//   .then(() => {
-//     console.log('MongoDB connected');
-//     app.listen(process.env.PORT, () =>
-//       console.log('Server running on port ' + process.env.PORT)
-//     );
-//   })
-//   .catch(err => console.error('DB connection failed:', err));/
+import cors from 'cors';  
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';  
 const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -34,18 +12,12 @@ const cors = require('cors');
 
 const app = express();
 
-// app.use(cors({
-//   origin: [
-//     'http://localhost:5173',
-//     'https://legacy-locker-qnmk-qqm9nx0vj-kiranpal19s-projects.vercel.app',
-//     'https://legacy-locker-qnmk.vercel.app'
-//   ],
-//   credentials: true
-// }));
+
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://legacy-locker-qnmk.vercel.app'
+  'https://legacy-locker-qnmk.vercel.app',
+  "https://legacy-locker-qnmk-hxmdq8fg6-kiranpal19s-projects.vercel.app"
 ];
 
 app.use(cors({

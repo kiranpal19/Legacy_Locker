@@ -1,74 +1,47 @@
-const path = require('path');
 const express = require('express');
 const router = express.Router();
 const admin = require('firebase-admin');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const verifyToken = require('../middleware/verifyToken');
-const fs = require("fs");
 
-
-
-let serviceAccount;
-
-try {
-  if (process.env.FIREBASE_SERVICE_ACCOUNT) {
-    // For Vercel (JSON string in env)
-    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-
+// Initialize Firebase
+if (!admin.apps.length) {
+  try {
+    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
     if (serviceAccount.private_key) {
       serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
     }
-
-  } else {
-    // For local development (use file)
-    serviceAccount = require('./serviceAccount.json');
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount)
+    });
+  } catch (err) {
+    console.error('Firebase init failed:', err.message);
   }
-
-  console.log("Firebase initialized successfully");
-
-} catch (err) {
-  console.error("Firebase init failed:", err.message);
 }
 
-
-// POST /api/auth/verify
-// Frontend sends Firebase idToken, we return our own JWT
+// POST /api/auth/verify — production Firebase login
 router.post('/verify', async (req, res) => {
   try {
     const { idToken, name, email } = req.body;
-
-    // 1. Verify the Firebase token
     const decoded = await admin.auth().verifyIdToken(idToken);
     const phone = decoded.phone_number;
-
-    if (!phone) {
-      return res.status(400).json({ message: 'Phone number not found in token' });
-    }
-
-    // 2. Find or create user in MongoDB
+    if (!phone) return res.status(400).json({ message: 'Phone not found' });
     let user = await User.findOne({ phone });
-    if (!user) {
-      user = await User.create({ phone, name, email });
-    }
-
-    // 3. Issue our own JWT
+    if (!user) user = await User.create({ phone, name, email });
     const token = jwt.sign(
       { userId: user._id, phone: user.phone },
       process.env.JWT_SECRET,
       { expiresIn: '30d' }
     );
-
     res.json({ token, user });
-
   } catch (err) {
-    console.error('Auth error:', err.message);
     res.status(401).json({ message: 'Authentication failed', error: err.message });
   }
 });
 
-// POST /api/auth/me — get current user from JWT
-router.get('/me', require('../middleware/Verifytoken'), async (req, res) => {
+// GET /api/auth/me — get current user
+router.get('/me', verifyToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.userId);
     res.json(user);
@@ -77,31 +50,27 @@ router.get('/me', require('../middleware/Verifytoken'), async (req, res) => {
   }
 });
 
-// DEV ONLY — get a token without Firebase
-// Remove this before going live
-// router.post('/dev-login', async (req, res) => {
-//   try {
-//     const { phone } = req.body;
-
-//     let user = await User.findOne({ phone });
-//     if (!user) {
-//       user = await User.create({
-//         phone,
-//         name: 'Test User',
-//         email: req.body.email || 'test@gmail.com',
-//       });
-//     }
-
-//     const token = jwt.sign(
-//       { userId: user._id, phone: user.phone },
-//       process.env.JWT_SECRET,
-//       { expiresIn: '30d' }
-//     );
-
-//     res.json({ token, user });
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// });
+// POST /api/auth/dev-login — DEV ONLY
+router.post('/dev-login', async (req, res) => {
+  try {
+    const { phone, email } = req.body;
+    let user = await User.findOne({ phone });
+    if (!user) {
+      user = await User.create({
+        phone,
+        name: 'Test User',
+        email: email || 'test@gmail.com',
+      });
+    }
+    const token = jwt.sign(
+      { userId: user._id, phone: user.phone },
+      process.env.JWT_SECRET,
+      { expiresIn: '30d' }
+    );
+    res.json({ token, user });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 module.exports = router;

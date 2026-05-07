@@ -1,4 +1,3 @@
-const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -19,17 +18,15 @@ app.use(cors({
   credentials: true
 }));
 
-
-app.options(/.*/, cors());
-
+app.options('*', cors());
 app.use(express.json());
 
 app.get('/', (req, res) => res.json({ status: 'Legacy Locker API running' }));
 
-app.use('/api/auth',      require('./routes/Auth'));
-app.use('/api/memories',  require('./routes/Memories'));
-app.use('/api/nominees',  require('./routes/Nominees'));
-app.use('/api/insurance', require('./routes/Insurance'));
+app.use('/api/auth',      require('./routes/auth'));
+app.use('/api/memories',  require('./routes/memories'));
+app.use('/api/nominees',  require('./routes/nominees'));
+app.use('/api/insurance', require('./routes/insurance'));
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected'))
@@ -42,6 +39,3 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 module.exports = app;
-
-
-

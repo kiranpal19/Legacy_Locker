@@ -18,16 +18,40 @@ const fs = require("fs");
 // }
 
 
-if (!admin.apps.length) {
-  try {
-    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount)
-    });
-  } catch (err) {
-    console.error('Firebase init failed:', err.message);
+// if (!admin.apps.length) {
+//   try {
+//     const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+//     admin.initializeApp({
+//       credential: admin.credential.cert(serviceAccount)
+//     });
+//   } catch (err) {
+//     console.error('Firebase init failed:', err.message);
+//   }
+// }
+
+
+let serviceAccount;
+
+try {
+  if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+    // For Vercel (JSON string in env)
+    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+
+    if (serviceAccount.private_key) {
+      serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+    }
+
+  } else {
+    // For local development (use file)
+    serviceAccount = require('./serviceAccount.json');
   }
+
+  console.log("Firebase initialized successfully");
+
+} catch (err) {
+  console.error("Firebase init failed:", err.message);
 }
+
 
 // POST /api/auth/verify
 // Frontend sends Firebase idToken, we return our own JWT

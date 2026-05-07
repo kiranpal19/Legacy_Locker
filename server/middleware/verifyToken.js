@@ -26,9 +26,10 @@ const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
   //  Allow preflight requests
-  if (req.method === 'OPTIONS') {
-    return next();
-  }
+ if (req.method === 'OPTIONS') {
+  console.log("✅ OPTIONS bypassed");
+  return next();
+}
 
   const token = req.headers['authorization']?.split(' ')[1];
 

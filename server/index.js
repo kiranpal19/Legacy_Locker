@@ -13,6 +13,12 @@ const allowedOrigins = [
   'https://legacy-locker-qnmk.vercel.app'
 ];
 
+
+app.use((req, res, next) => {
+  console.log("🔥", req.method, req.url);
+  next();
+});
+
 app.use((req, res, next) => {
   const origin = req.headers.origin;
 

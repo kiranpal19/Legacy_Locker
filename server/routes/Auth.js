@@ -4,30 +4,9 @@ const router = express.Router();
 const admin = require('firebase-admin');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-
+const verifyToken = require('../middleware/verifyToken');
 const fs = require("fs");
 
-
-// if (!admin.apps.length) {
-//   const serviceAccountPath = path.resolve(process.cwd(), process.env.FIREBASE_SERVICE_ACCOUNT);
-//   const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, "utf8"));
-
-//   admin.initializeApp({
-//     credential: admin.credential.cert(serviceAccount)
-//   });
-// }
-
-
-// if (!admin.apps.length) {
-//   try {
-//     const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-//     admin.initializeApp({
-//       credential: admin.credential.cert(serviceAccount)
-//     });
-//   } catch (err) {
-//     console.error('Firebase init failed:', err.message);
-//   }
-// }
 
 
 let serviceAccount;

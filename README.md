@@ -41,3 +41,12 @@ This project transforms traditional data storage into an **emotional legacy plat
 
 
 
+<<<<<<< HEAD
+=======
+
+
+
+
+
+
+>>>>>>> 80a9eae44582eb53951e414e28c6aee8b39fd1c7

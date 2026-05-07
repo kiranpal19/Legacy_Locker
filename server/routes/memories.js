@@ -112,5 +112,19 @@ router.delete('/:id', verifyToken, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+router.patch('/:id', verifyToken, async (req, res) => {
+  try {
+    const memory = await Memory.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user.userId },
+      req.body,
+      { new: true }
+    );
+    if (!memory) return res.status(404).json({ message: 'Memory not found' });
+    res.json({ message: 'Memory updated', memory });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 module.exports = router;

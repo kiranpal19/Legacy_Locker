@@ -7,6 +7,7 @@ const nomineeSchema = new mongoose.Schema({
   relation:   { type: String, required: true },
   phone:      { type: String, required: true },
   email:      { type: String },
+  birthDate:  { type: Date },          // used for age_18 trigger
   isVerified: { type: Boolean, default: false },
 }, { timestamps: true });
 

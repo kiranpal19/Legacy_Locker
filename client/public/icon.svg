@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" rx="112" fill="#1a1208"/>
+  <!-- Gold circle accent -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="#c9a84c" stroke-width="8" opacity="0.3"/>
+  <!-- Lock body -->
+  <rect x="152" y="240" width="208" height="168" rx="20" fill="#c9a84c"/>
+  <!-- Lock shackle -->
+  <path d="M192 240 V180 Q192 120 256 120 Q320 120 320 180 V240"
+        fill="none" stroke="#c9a84c" stroke-width="28" stroke-linecap="round"/>
+  <!-- Keyhole -->
+  <circle cx="256" cy="316" r="22" fill="#1a1208"/>
+  <rect x="244" y="316" width="24" height="36" rx="6" fill="#1a1208"/>
+</svg>

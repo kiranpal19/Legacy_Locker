@@ -12,24 +12,27 @@ api.interceptors.request.use((config) => {
 });
 
 // Auth
-export const devLogin   = (data) => api.post('/auth/dev-login', data);
-export const getMe      = ()     => api.get('/auth/me');
+export const verifyFirebaseToken = (data) => api.post('/auth/verify', data);
+export const getMe               = ()     => api.get('/auth/me');
 
 // Memories
-export const getMemories    = ()       => api.get('/memories');
-export const uploadMemory   = (data)   => api.post('/memories/upload', data);
-export const deleteMemory   = (id)     => api.delete(`/memories/${id}`);
+export const getMemories  = ()     => api.get('/memories');
+export const uploadMemory = (data) => api.post('/memories/upload', data, {
+  headers: { 'Content-Type': 'multipart/form-data' },
+});
+export const deleteMemory = (id)   => api.delete(`/memories/${id}`);
+export const patchMemory  = (id, data) => api.patch(`/memories/${id}`, data);
 
 // Nominees
-export const getNominees    = ()       => api.get('/nominees');
-export const addNominee     = (data)   => api.post('/nominees', data);
-export const updateNominee  = (id, d)  => api.patch(`/nominees/${id}`, d);
-export const deleteNominee  = (id)     => api.delete(`/nominees/${id}`);
-export const verifyNominee  = (id)     => api.patch(`/nominees/${id}/verify`);
+export const getNominees   = ()       => api.get('/nominees');
+export const addNominee    = (data)   => api.post('/nominees', data);
+export const updateNominee = (id, d)  => api.patch(`/nominees/${id}`, d);
+export const deleteNominee = (id)     => api.delete(`/nominees/${id}`);
+export const verifyNominee = (id)     => api.patch(`/nominees/${id}/verify`);
 
 // Insurance
-export const linkPolicy     = (data)   => api.post('/insurance/link', data);
-export const getStatus      = ()       => api.get('/insurance/status');
-export const testTrigger    = ()       => api.post('/insurance/test-trigger');
+export const linkPolicy  = (data) => api.post('/insurance/link', data);
+export const getStatus   = ()     => api.get('/insurance/status');
+export const testTrigger = ()     => api.post('/insurance/test-trigger');
 
 export default api;

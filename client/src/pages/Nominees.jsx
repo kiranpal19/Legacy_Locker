@@ -5,12 +5,10 @@ import { useNavigate } from 'react-router-dom';
 export default function Nominees() {
   const navigate = useNavigate();
   const [nominees, setNominees] = useState([]);
-  const [form, setForm] = useState({ name:'', relation:'', phone:'', email:'' });
-  const [loading, setLoading] = useState(false);
+  const [loading,  setLoading]  = useState(false);
+  const [form, setForm] = useState({ name: '', relation: '', phone: '', email: '', birthDate: '' });
 
-  useEffect(() => {
-    getNominees().then(r => setNominees(r.data));
-  }, []);
+  useEffect(() => { getNominees().then(r => setNominees(r.data)).catch(() => {}); }, []);
 
   const handleAdd = async (e) => {
     e.preventDefault();
@@ -18,15 +16,14 @@ export default function Nominees() {
     try {
       const res = await addNominee(form);
       setNominees(prev => [res.data.nominee, ...prev]);
-      setForm({ name:'', relation:'', phone:'', email:'' });
+      setForm({ name: '', relation: '', phone: '', email: '', birthDate: '' });
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to add nominee');
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
   const handleDelete = async (id) => {
+    if (!window.confirm('Remove this nominee?')) return;
     await deleteNominee(id);
     setNominees(prev => prev.filter(n => n._id !== id));
   };
@@ -37,84 +34,97 @@ export default function Nominees() {
   };
 
   return (
-    <div style={styles.page}>
-      <div style={styles.wrap}>
-        <button style={styles.back} onClick={() => navigate('/dashboard')}>← Dashboard</button>
-        <h2 style={styles.title}>Manage Nominees</h2>
+    <div style={page}>
+      <div style={wrap}>
+        <button style={backBtn} onClick={() => navigate('/dashboard')}>← Dashboard</button>
+        <h2 style={titleStyle}>Manage Nominees</h2>
 
         {/* Add form */}
-        <div style={styles.card}>
-          <h3 style={styles.subtitle}>Add Nominee</h3>
+        <div className="card" style={formCard}>
+          <h3 style={subtitle}>Add a Nominee</h3>
           <form onSubmit={handleAdd}>
-            <div style={styles.row}>
-              <input style={styles.input} placeholder="Full name"
-                value={form.name} onChange={e => setForm({...form, name: e.target.value})} required />
-              <input style={styles.input} placeholder="Relation (e.g. Daughter)"
-                value={form.relation} onChange={e => setForm({...form, relation: e.target.value})} required />
+            <div style={row}>
+              <div style={field}>
+                <label className="label">Full Name</label>
+                <input className="input" placeholder="e.g. Priya Sharma"
+                  value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required />
+              </div>
+              <div style={field}>
+                <label className="label">Relation</label>
+                <input className="input" placeholder="e.g. Daughter"
+                  value={form.relation} onChange={e => setForm(f => ({ ...f, relation: e.target.value }))} required />
+              </div>
             </div>
-            <div style={styles.row}>
-              <input style={styles.input} placeholder="Phone (+91...)"
-                value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} required />
-              <input style={styles.input} placeholder="Email"
-                value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
+            <div style={row}>
+              <div style={field}>
+                <label className="label">Phone</label>
+                <input className="input" placeholder="+91…"
+                  value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} required />
+              </div>
+              <div style={field}>
+                <label className="label">Email (optional)</label>
+                <input className="input" type="email" placeholder="email@example.com"
+                  value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
+              </div>
             </div>
-            <button style={styles.btn} type="submit" disabled={loading}>
-              {loading ? 'Adding...' : '+ Add Nominee'}
+            <div style={field}>
+              <label className="label">Date of Birth <span style={{ color: 'var(--text-light)', fontWeight: 400, textTransform: 'none' }}>(for age-18 trigger)</span></label>
+              <input className="input" type="date" style={{ marginBottom: '16px' }}
+                value={form.birthDate} onChange={e => setForm(f => ({ ...f, birthDate: e.target.value }))} />
+            </div>
+            <button className="btn btn-primary" type="submit" disabled={loading}>
+              {loading ? 'Adding…' : '+ Add Nominee'}
             </button>
           </form>
         </div>
 
-        {/* Nominees list */}
-        {nominees.map(n => (
-          <div key={n._id} style={styles.nomineeRow}>
-            <div style={styles.nomineeAvatar}>{n.name[0]}</div>
-            <div style={styles.nomineeInfo}>
-              <div style={styles.nomineeName}>{n.name}</div>
-              <div style={styles.nomineeMeta}>{n.relation} · {n.phone}</div>
-            </div>
-            <div style={styles.nomineeActions}>
-              {n.isVerified
-                ? <span style={styles.verified}>✓ Verified</span>
-                : <button style={styles.verifyBtn} onClick={() => handleVerify(n._id)}>Verify</button>
-              }
-              <button style={styles.deleteBtn} onClick={() => handleDelete(n._id)}>Delete</button>
-            </div>
+        {/* List */}
+        {nominees.length === 0 ? (
+          <div className="card" style={emptyState}>
+            <span style={{ fontSize: '36px' }}>👥</span>
+            <p style={{ color: 'var(--text-muted)', marginTop: '12px', fontSize: '14px' }}>No nominees added yet.</p>
           </div>
-        ))}
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {nominees.map(n => (
+              <div key={n._id} className="card" style={nomineeRow}>
+                <div style={avatar}>{n.name[0].toUpperCase()}</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={nomineeName}>{n.name}</div>
+                  <div style={nomineeMeta}>
+                    {n.relation} · {n.phone}
+                    {n.birthDate && <span> · 🎂 {new Date(n.birthDate).toLocaleDateString()}</span>}
+                  </div>
+                </div>
+                <div style={actions}>
+                  {n.isVerified
+                    ? <span style={verifiedBadge}>✓ Verified</span>
+                    : <button className="btn" style={verifyBtn} onClick={() => handleVerify(n._id)}>Verify</button>
+                  }
+                  <button className="btn btn-danger" onClick={() => handleDelete(n._id)}>Delete</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-const styles = {
-  page:          { minHeight:'100vh', background:'#faf7f2', padding:'32px' },
-  wrap:          { maxWidth:'640px', margin:'0 auto' },
-  back:          { background:'none', border:'none', color:'#6b6355',
-                   cursor:'pointer', fontSize:'14px', marginBottom:'16px', padding:0 },
-  title:         { fontFamily:'Georgia,serif', fontSize:'26px', marginBottom:'24px' },
-  card:          { background:'white', padding:'24px', borderRadius:'12px',
-                   border:'1px solid #ede7d9', marginBottom:'24px' },
-  subtitle:      { fontSize:'16px', fontWeight:'500', marginBottom:'16px' },
-  row:           { display:'flex', gap:'12px' },
-  input:         { flex:1, padding:'10px 12px', marginBottom:'12px',
-                   border:'1px solid #ddd', borderRadius:'8px', fontSize:'14px' },
-  btn:           { padding:'10px 20px', background:'#1a1208', color:'white',
-                   border:'none', borderRadius:'8px', cursor:'pointer', fontSize:'13px' },
-  nomineeRow:    { background:'white', padding:'16px 20px', borderRadius:'12px',
-                   border:'1px solid #ede7d9', marginBottom:'12px',
-                   display:'flex', alignItems:'center', gap:'14px' },
-  nomineeAvatar: { width:'40px', height:'40px', borderRadius:'50%',
-                   background:'#f5e8d0', display:'flex', alignItems:'center',
-                   justifyContent:'center', fontWeight:'500', fontSize:'16px' },
-  nomineeInfo:   { flex:1 },
-  nomineeName:   { fontWeight:'500', fontSize:'14px' },
-  nomineeMeta:   { fontSize:'12px', color:'#6b6355', marginTop:'2px' },
-  nomineeActions:{ display:'flex', gap:'8px', alignItems:'center' },
-  verified:      { fontSize:'12px', color:'#2e8b57', background:'#e8f5ee',
-                   padding:'3px 8px', borderRadius:'4px' },
-  verifyBtn:     { fontSize:'12px', color:'#c9a84c', background:'none',
-                   border:'1px solid #c9a84c', borderRadius:'4px',
-                   padding:'3px 8px', cursor:'pointer' },
-  deleteBtn:     { fontSize:'12px', color:'#e24b4a', background:'none',
-                   border:'none', cursor:'pointer' },
-};
+const page         = { minHeight: '100vh', background: 'var(--bg)', padding: '28px 16px' };
+const wrap         = { maxWidth: '680px', margin: '0 auto' };
+const backBtn      = { background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '14px', marginBottom: '8px', padding: 0 };
+const titleStyle   = { fontSize: '24px', marginBottom: '24px' };
+const formCard     = { padding: '24px', marginBottom: '24px' };
+const subtitle     = { fontSize: '15px', fontWeight: 600, marginBottom: '18px', color: 'var(--brand-dark)' };
+const row          = { display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '0' };
+const field        = { flex: '1 1 180px', display: 'flex', flexDirection: 'column', marginBottom: '14px' };
+const emptyState   = { padding: '40px 24px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' };
+const nomineeRow   = { padding: '16px 18px', display: 'flex', alignItems: 'center', gap: '14px' };
+const avatar       = { width: '40px', height: '40px', borderRadius: '50%', background: 'var(--brand-gold-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, fontSize: '16px', color: 'var(--brand-dark)', flexShrink: 0 };
+const nomineeName  = { fontWeight: 600, fontSize: '14px', color: 'var(--brand-dark)' };
+const nomineeMeta  = { fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' };
+const actions      = { display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 };
+const verifiedBadge = { fontSize: '12px', color: 'var(--success)', background: 'var(--success-bg)', padding: '3px 10px', borderRadius: '20px', fontWeight: 500 };
+const verifyBtn    = { fontSize: '12px', color: 'var(--brand-gold)', background: 'transparent', border: '1px solid var(--brand-gold)', borderRadius: '20px', padding: '3px 10px', cursor: 'pointer' };

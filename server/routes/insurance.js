@@ -15,8 +15,8 @@ router.post('/webhook', async (req, res) => {
   try {
     const { policyId, event, secret } = req.body;
 
-    // Basic security check — insurer must send the right secret
-    if (secret !== process.env.JWT_SECRET) {
+    // Validate webhook secret — uses its own dedicated secret
+    if (!process.env.WEBHOOK_SECRET || secret !== process.env.WEBHOOK_SECRET) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
